@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELMAHALAWI | لخدمات التصوير والمونتاج</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Great+Vibes&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#f6e05e',
+                            500: '#ecc94b',
+                            600: '#d69e2e',
+                        },
+                        dark: {
+                            900: '#000000', /* الأسود القاتم */
+                            800: '#0a0a0a',
+                            700: '#171717',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        en: ['Montserrat', 'sans-serif'],
+                        signature: ['Great Vibes', 'cursive'], /* خط التوقيع */
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #000000;
+            color: #f8fafc;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Ambient Cinematic Glows */
+        .ambient-glow-1, .ambient-glow-2 {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 10s infinite alternate;
+        }
+        .ambient-glow-1 {
+            width: 400px; height: 400px;
+            background: #ecc94b;
+            top: -100px; right: -100px;
+        }
+        .ambient-glow-2 {
+            width: 500px; height: 500px;
+            background: #d69e2e;
+            bottom: -200px; left: -100px;
+            animation-delay: 5s;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.1; }
+            100% { transform: scale(1.2); opacity: 0.25; }
+        }
+
+        /* Glassmorphism Navbar */
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(236, 201, 75, 0.1);
+        }
+
+        /* Intro Animation */
+        #intro-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        .intro-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.5rem, 5vw, 3.5rem); /* تصغير الكلمة بنسبة 20% لتناسب الهاتف */
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            color: transparent;
+            -webkit-text-stroke: 1.5px #ecc94b;
+            position: relative;
+            animation: textReveal 3s ease-out forwards;
+        }
+
+        .intro-text::before {
+            content: "ELMAHALAWI";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            color: #ecc94b;
+            overflow: hidden;
+            animation: textFill 2s ease-in-out 1s forwards;
+            -webkit-text-stroke: 0px;
+        }
+
+        @keyframes textReveal {
+            0% { opacity: 0; transform: scale(1.3); }
+            30% { opacity: 1; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 15px rgba(236, 201, 75, 0.4)); }
+        }
+        @keyframes textFill {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Hero Text Floating Animation */
+        .floating-text {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Button Shine Effect */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: 0.6s;
+        }
+        .btn-shine:hover::after {
+            left: 120%;
+        }
+
+        /* Carousel Styles for Mobile */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .snap-container {
+            scroll-snap-type: x mandatory;
+            scroll-padding: 0 1rem;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .carousel-item {
+            scroll-snap-align: center;
+            scroll-snap-stop: always; /* يجبر الوقوف عند كل باقة */
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Card Hover (Desktop) */
+        @media (min-width: 768px) {
+            .desktop-card-hover:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 20px 40px -5px rgba(236, 201, 75, 0.2);
+                border-color: #ecc94b;
+            }
+        }
+
+        /* Fade/Slide In Animations */
+        .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .slide-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* Input iOS Fix */
+        input, textarea { font-size: 16px !important; }
+    </style>
+</head>
+<body class="antialiased relative overflow-x-hidden">
+
+    <!-- Ambient Glows -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen">
+        <h1 class="intro-text" dir="ltr">ELMAHALAWI</h1>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 top-0 transition-all duration-300 bg-transparent py-2" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- Logo with Signature Font -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer z-50">
+                    <span class="font-signature text-3xl sm:text-5xl text-gold-500 tracking-wider">Elmahalawi</span>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 space-x-reverse">
+                    <a href="#home" class="text-gray-300 hover:text-gold-500 px-3 py-2 text-sm font-semibold transition">الرئيسية</a>
+                    <a href="#video-section" class="text-gray-300 hover:text-gold-500 px-3 py-2 text-sm font-semibold transition">الفيديو والريلز</a>
+                    <a href="#photo-section" class="text-gray-300 hover:text-gold-500 px-3 py-2 text-sm font-semibold transition">باقات التصوير</a>
+                    <a href="#contact" class="text-gray-300 hover:text-gold-500 px-3 py-2 text-sm font-semibold transition">تواصل معنا</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center z-50">
+                    <button id="mobile-menu-btn" class="text-gold-500 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden fixed inset-0 bg-dark-900/95 backdrop-blur-md z-40 flex flex-col justify-center items-center space-y-8">
+            <a href="#home" class="mobile-link text-white hover:text-gold-500 text-2xl font-bold transition">الرئيسية</a>
+            <a href="#video-section" class="mobile-link text-white hover:text-gold-500 text-2xl font-bold transition">الفيديو والريلز</a>
+            <a href="#photo-section" class="mobile-link text-white hover:text-gold-500 text-2xl font-bold transition">باقات التصوير</a>
+            <a href="#contact" class="mobile-link text-white hover:text-gold-500 text-2xl font-bold transition">تواصل معنا</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center relative pt-20 bg-cover bg-center bg-fixed transition-all duration-700" style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.95)), url('https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center md:text-right flex flex-col items-center md:items-start">
+            <div class="md:w-3/4">
+                <h2 class="slide-up text-gold-500 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm mb-4">استديو ومونتاج احترافي</h2>
+                <h1 class="slide-up delay-100 text-4xl sm:text-6xl md:text-7xl font-black text-white mb-6 leading-tight">
+                    حول لحظاتك إلى <br>
+                    <span class="floating-text inline-block text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-yellow-500 to-gold-600 drop-shadow-[0_0_10px_rgba(236,201,75,0.5)]">تحفة فنية</span>
+                </h1>
+                <p class="slide-up delay-200 mt-4 text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
+                    نقدم لك خدمات التصوير الفوتوغرافي، الفيديو، والمونتاج السينمائي لتخليد ذكرياتك بأعلى جودة وإبداع.
+                </p>
+                <div class="slide-up delay-300">
+                    <a href="#video-section" class="btn-shine inline-block bg-gradient-to-r from-gold-500 to-gold-600 text-black px-8 py-4 rounded-full font-black text-lg shadow-[0_0_20px_rgba(236,201,75,0.4)]">
+                        تصفح باقاتنا
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+            <i class="fa-solid fa-angles-down text-gold-500 text-2xl opacity-70"></i>
+        </div>
+    </section>
+
+    <!-- Video & Reels Section -->
+    <section id="video-section" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 sm:mb-16 px-4 slide-up">
+                <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">قسم الفيديو والريلز</h2>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto rounded"></div>
+                <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">نقدم خدمات تصوير ومونتاج الريلز والفيديوهات بأسلوب احترافي يناسب جميع احتياجاتك.</p>
+            </div>
+            
+            <!-- Carousel Container for Mobile, Grid for Desktop -->
+            <div class="snap-container hide-scrollbar flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-8 px-4 sm:px-0" id="video-grid">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Photography Packages Section -->
+    <section id="photo-section" class="py-24 relative z-10 bg-dark-800/30 border-t border-b border-gold-500/10">
+        <div class="max-w-7xl mx-auto px-0 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 sm:mb-16 px-4 slide-up">
+                <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">باقات التصوير</h2>
+                <div class="h-1 w-24 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto rounded"></div>
+                <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">اختر الباقة التي تناسب مناسبتك، لتوثيق أجمل اللحظات بأناقة.</p>
+            </div>
+            
+            <!-- Carousel Container for Mobile, Grid for Desktop -->
+            <div class="snap-container hide-scrollbar flex md:grid md:grid-cols-3 gap-6 overflow-x-auto pb-12 px-4 sm:px-0" id="photo-grid">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="pt-16 pb-8 relative z-10 border-t border-dark-800 bg-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                <div class="text-center md:text-right">
+                    <div class="mb-2">
+                        <span class="font-signature text-4xl text-gold-500 tracking-wider block mb-2">Elmahalawi</span>
+                    </div>
+                    <p class="text-gray-400 max-w-sm text-sm">نوثق لحظاتك السعيدة لتصبح ذكريات خالدة بأعلى معايير الجودة والإبداع.</p>
+                </div>
+                
+                <div class="flex gap-4">
+                    <a href="https://www.facebook.com/osamaelmahalawi" target="_blank" class="w-12 h-12 rounded-full border border-dark-700 bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:border-gold-500 transition-all text-xl shadow-lg">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/osama_elmahalawi_ph/" target="_blank" class="w-12 h-12 rounded-full border border-dark-700 bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:border-gold-500 transition-all text-xl shadow-lg">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/201096755229" target="_blank" class="w-12 h-12 rounded-full border border-dark-700 bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:border-gold-500 transition-all text-xl shadow-lg">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@elmahalawi" target="_blank" class="w-12 h-12 rounded-full border border-dark-700 bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:border-gold-500 transition-all text-xl shadow-lg">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center text-gray-600 text-xs sm:text-sm border-t border-dark-800 pt-8 mt-8 flex flex-col items-center justify-center gap-3">
+                <div>&copy; <span id="year"></span> ELMAHALAWI STUDIO. جميع الحقوق محفوظة.</div>
+                <div class="flex items-center gap-2 hover:text-gold-500 transition-colors cursor-pointer select-none" onclick="window.openModal('login-modal')">
+                    <span>تم التصميم بواسطة المحلاوي</span>
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-900 p-6 sm:p-8 rounded-3xl max-w-md w-full border border-gold-500/30 shadow-[0_0_40px_rgba(236,201,75,0.15)] transform scale-95 transition-transform duration-300" id="booking-modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-black text-white">تأكيد الحجز</h3>
+                <button onclick="window.closeModal('booking-modal')" class="text-gray-500 hover:text-gold-500 transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div class="bg-dark-800 rounded-xl p-4 mb-6 border border-dark-700">
+                <p class="text-gray-400 text-xs mb-1">الباقة المختارة:</p>
+                <p id="booking-pkg-name" class="text-gold-500 font-bold text-lg"></p>
+            </div>
+            
+            <input type="hidden" id="booking-pkg-id">
+            
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">الاسم بالكامل</label>
+                    <input type="text" id="booking-name" class="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition" placeholder="ادخل اسمك">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">العنوان</label>
+                    <input type="text" id="booking-address" class="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition" placeholder="ادخل عنوانك بالتفصيل">
+                </div>
+            </div>
+            
+            <button onclick="window.confirmBooking()" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 text-black py-4 rounded-xl font-black text-lg hover:shadow-[0_0_20px_rgba(236,201,75,0.4)] transition flex items-center justify-center gap-2">
+                <span>تأكيد ومراسلة واتساب</span>
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-900 p-6 sm:p-8 rounded-3xl max-w-sm w-full border border-dark-700 shadow-2xl transform scale-95 transition-transform duration-300" id="login-modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-white">تسجيل دخول الإدارة</h3>
+                <button onclick="window.closeModal('login-modal')" class="text-gray-500 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-4 mb-6">
+                <input type="text" id="admin-user" class="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition" placeholder="اسم المستخدم">
+                <input type="password" id="admin-pass" class="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition" placeholder="كلمة المرور">
+            </div>
+            <button onclick="window.handleLogin()" class="w-full bg-gold-500 text-black py-3 rounded-xl font-bold hover:bg-gold-400 transition">دخول</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="admin-modal" class="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-900 sm:rounded-3xl w-full h-full sm:max-w-4xl sm:h-[90vh] flex flex-col border border-dark-700 shadow-2xl transform scale-95 transition-transform duration-300" id="admin-modal-content">
+            <div class="p-6 border-b border-dark-800 flex justify-between items-center bg-black sm:rounded-t-3xl">
+                <h3 class="text-xl sm:text-2xl font-black text-gold-500"><i class="fa-solid fa-gear ml-2"></i> لوحة التحكم</h3>
+                <button onclick="window.closeModal('admin-modal')" class="text-gray-400 hover:text-white bg-dark-800 w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-4 sm:p-6 overflow-y-auto hide-scrollbar flex-grow space-y-6" id="admin-form-container">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="p-4 border-t border-dark-800 bg-black sm:rounded-b-3xl">
+                <button onclick="window.saveAdminData()" class="w-full bg-gold-500 text-black py-4 rounded-xl font-black text-base sm:text-lg hover:shadow-[0_0_20px_rgba(236,201,75,0.4)] transition">
+                    حفظ التغييرات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="msg-modal" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-dark-900 p-8 rounded-3xl max-w-sm w-full border border-dark-700 text-center transform scale-95 transition-transform duration-300" id="msg-modal-content">
+            <div id="msg-icon" class="text-5xl mb-4 text-gold-500"></div>
+            <p id="msg-text" class="text-white mb-8 text-sm sm:text-base leading-relaxed"></p>
+            <button onclick="window.closeModal('msg-modal')" class="w-full bg-gold-500 text-black px-6 py-3 rounded-xl font-bold">حسناً</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 1. Firebase Configuration
+        const userFirebaseConfig = {
+            apiKey: "AIzaSyCsoru_MzV3F1-iOzCDwRnAXvnMzmqJRi0",
+            authDomain: "elmahalawi1.firebaseapp.com",
+            projectId: "elmahalawi1",
+            storageBucket: "elmahalawi1.firebasestorage.app",
+            messagingSenderId: "264892804574",
+            appId: "1:264892804574:web:b9732f8e7c39bffd4fc14f"
+        };
+        
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userFirebaseConfig;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'elmahalawi-studio';
+
+        // 2. Default App Data
+        let appData = {
+            heroBg: "https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80",
+            videoPackages: [
+                { id: 'v1', title: 'تصوير ومونتاج بسيط', desc: 'تصوير لقطات سريعة مع مونتاج أساسي وألوان طبيعية.', price: 400, active: true, img: 'https://images.unsplash.com/photo-1527011045974-4b8cb6a21356?auto=format&fit=crop&w=500&q=80', icon: 'fa-video' },
+                { id: 'v2', title: 'تصوير ومونتاج احترافي', desc: 'تصوير سينمائي عالي الجودة مع مونتاج احترافي وتعديل ألوان.', price: 600, active: true, img: 'https://images.unsplash.com/photo-1589652717521-10c0d092dea9?auto=format&fit=crop&w=500&q=80', icon: 'fa-film', featured: true },
+                { id: 'v3', title: 'تصوير فقط', desc: 'جلسة تصوير فيديو بدون مونتاج، تسليم المواد الخام.', price: 300, active: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80', icon: 'fa-camera' },
+                { id: 'v4', title: 'مونتاج بسيط فقط', desc: 'ترتيب المقاطع وإضافة موسيقى أساسية.', price: 200, active: true, img: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=500&q=80', icon: 'fa-scissors' },
+                { id: 'v5', title: 'مونتاج احترافي فقط', desc: 'مونتاج كامل يشمل تعديل الألوان والانتقالات الاحترافية.', price: 400, active: true, img: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&w=500&q=80', icon: 'fa-wand-magic-sparkles' }
+            ],
+            photoPackages: [
+                { id: 'p1', title: 'Silver', subtitle: 'الباقة الفضية', desc: 'جلسة تصوير فوتوغرافي، تعديل احترافي، تسليم فلاشة.', price: 1200, active: true, img: 'https://images.unsplash.com/photo-1532712938736-69f071cb29c4?auto=format&fit=crop&w=500&q=80' },
+                { id: 'p2', title: 'VIP WEDDING', subtitle: 'تغطية الزفاف الشاملة', desc: 'تغطية كاملة ليوم الزفاف، فيديو ومونتاج سينمائي، ألبوم فاخر.', price: 2700, active: true, img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80', featured: true },
+                { id: 'p3', title: 'MINI WEDDING', subtitle: 'كتب الكتاب / خطوبة', desc: 'تصوير فيديو هايلايت، تسليم الصور والفيديو بجودة عالية.', price: 2000, active: true, img: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=500&q=80' }
+            ]
+        };
+
+        const docPath = `artifacts/${currentAppId}/public/data/studioSettings`;
+        const docRef = doc(db, docPath, 'mainData');
+
+        // Focus observer for Carousel Items
+        const setupCarouselObservers = () => {
+            // Apply only on mobile screens
+            if (window.innerWidth >= 768) return; 
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.remove('scale-90', 'opacity-50', 'brightness-50');
+                        entry.target.classList.add('scale-100', 'opacity-100', 'brightness-100', 'shadow-[0_0_30px_rgba(236,201,75,0.2)]');
+                        entry.target.style.borderColor = '#ecc94b';
+                    } else {
+                        entry.target.classList.remove('scale-100', 'opacity-100', 'brightness-100', 'shadow-[0_0_30px_rgba(236,201,75,0.2)]');
+                        entry.target.classList.add('scale-90', 'opacity-50', 'brightness-50');
+                        entry.target.style.borderColor = '#171717';
+                    }
+                });
+            }, { root: null, rootMargin: '0px -15% 0px -15%', threshold: 0.6 });
+
+            document.querySelectorAll('.carousel-item').forEach(el => observer.observe(el));
+        };
+
+        window.renderApp = function() {
+            // Update Hero BG
+            document.getElementById('home').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.95)), url('${appData.heroBg}')`;
+
+            // Render Video Packages
+            const videoGrid = document.getElementById('video-grid');
+            videoGrid.innerHTML = '';
+            appData.videoPackages.forEach((pkg) => {
+                const cardHTML = `
+                    <div class="carousel-item desktop-card-hover min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-full bg-dark-900 border border-dark-700 rounded-3xl flex flex-col relative overflow-hidden ${!pkg.active ? 'opacity-50 grayscale pointer-events-none' : ''}">
+                        ${pkg.featured ? `<div class="absolute z-20 top-4 right-4 bg-gold-500 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">الأكثر طلباً</div>` : ''}
+                        
+                        <div class="relative w-full h-48 sm:h-56">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent z-10"></div>
+                            <img src="${pkg.img}" alt="${pkg.title}" class="w-full h-full object-cover">
+                            <div class="absolute bottom-4 right-4 w-12 h-12 bg-dark-800 text-gold-500 rounded-2xl flex items-center justify-center text-lg border border-dark-700 shadow-lg z-20">
+                                <i class="fa-solid ${pkg.icon}"></i>
+                            </div>
+                        </div>
+
+                        <div class="p-6 sm:p-8 flex flex-col flex-grow relative z-20 -mt-6">
+                            <h3 class="text-lg sm:text-xl font-bold text-white mb-2">${pkg.title}</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm mb-6 flex-grow leading-relaxed">${pkg.desc}</p>
+                            <div class="text-2xl sm:text-3xl font-black text-gold-500 mb-6">${pkg.price} <span class="text-xs text-gray-500 font-normal">جنيه</span></div>
+                            <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-3 sm:py-4 rounded-xl ${pkg.featured ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border border-gold-500/50 text-gold-500 hover:bg-gold-500/10'} font-bold transition text-sm sm:text-base">
+                                ${pkg.active ? 'احجز الآن' : 'غير متاح'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                videoGrid.innerHTML += cardHTML;
+            });
+
+            // Render Photo Packages
+            const photoGrid = document.getElementById('photo-grid');
+            photoGrid.innerHTML = '';
+            appData.photoPackages.forEach((pkg) => {
+                const isVip = pkg.featured;
+                const cardHTML = `
+                    <div class="carousel-item desktop-card-hover min-w-[85vw] sm:min-w-[300px] md:min-w-0 md:w-full ${isVip ? 'bg-gradient-to-b from-dark-900 to-black border border-gold-500/50' : 'bg-dark-900 border border-dark-700'} rounded-3xl flex flex-col relative overflow-hidden ${!pkg.active ? 'opacity-50 grayscale pointer-events-none' : ''}">
+                        ${isVip ? `<div class="absolute z-20 top-4 left-1/2 transform -translate-x-1/2 bg-gold-500 text-black px-4 py-1 rounded-full font-bold text-xs shadow-[0_0_15px_rgba(236,201,75,0.4)]">الباقة الذهبية</div>` : ''}
+                        
+                        <div class="relative w-full h-56 sm:h-64">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent z-10"></div>
+                            <img src="${pkg.img}" alt="${pkg.title}" class="w-full h-full object-cover">
+                        </div>
+
+                        <div class="p-6 sm:p-8 relative z-20 -mt-12 flex flex-col flex-grow text-center">
+                            <h3 class="${isVip ? 'text-2xl sm:text-3xl text-gold-500' : 'text-xl sm:text-2xl text-white'} font-black mb-1 font-en tracking-widest">${pkg.title}</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm mb-6">${pkg.subtitle}</p>
+                            
+                            <div class="mb-6">
+                                <span class="${isVip ? 'text-4xl sm:text-5xl' : 'text-3xl sm:text-4xl'} font-black text-white">${pkg.price}</span>
+                                <span class="text-gray-500 text-sm">جنيه</span>
+                            </div>
+                            
+                            <p class="text-gray-400 text-xs sm:text-sm mb-8 flex-grow leading-relaxed">${pkg.desc}</p>
+                            
+                            <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-3 sm:py-4 rounded-xl ${isVip ? 'bg-gold-500 text-black hover:shadow-[0_0_20px_rgba(236,201,75,0.3)]' : 'border border-dark-600 text-white hover:bg-dark-800'} font-bold transition text-sm sm:text-base">
+                                ${pkg.active ? 'اختيار الباقة' : 'غير متاح'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                photoGrid.innerHTML += cardHTML;
+            });
+            
+            // Re-initialize intersection observers for the new elements
+            setTimeout(() => {
+                setupCarouselObservers();
+            }, 100);
+        }
+
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-95');
+        }
+
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.add('scale-95');
+        }
+
+        window.showMessage = function(text, isError = false) {
+            document.getElementById('msg-text').textContent = text;
+            const icon = document.getElementById('msg-icon');
+            if(isError) {
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500"></i>';
+            } else {
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+            }
+            window.openModal('msg-modal');
+        }
+
+        window.getPackageById = function(id) {
+            return appData.videoPackages.find(p => p.id === id) || appData.photoPackages.find(p => p.id === id);
+        }
+
+        window.openBooking = function(pkgId) {
+            const pkg = window.getPackageById(pkgId);
+            if (!pkg || !pkg.active) return;
+            
+            document.getElementById('booking-pkg-id').value = pkg.id;
+            document.getElementById('booking-pkg-name').textContent = pkg.title;
+            document.getElementById('booking-name').value = '';
+            document.getElementById('booking-address').value = '';
+            window.openModal('booking-modal');
+        }
+
+        window.confirmBooking = function() {
+            const pkgId = document.getElementById('booking-pkg-id').value;
+            const name = document.getElementById('booking-name').value.trim();
+            const address = document.getElementById('booking-address').value.trim();
+            
+            if (!name || !address) {
+                window.showMessage('الرجاء إدخال الاسم والعنوان بالكامل للمتابعة.', true);
+                return;
+            }
+            
+            const pkg = window.getPackageById(pkgId);
+            if (!pkg) return;
+
+            const phone = "201096755229";
+            const text = `مرحباً أستاذ أسامة،\nأود حجز الخدمة التالية:\n\n*الباقة:* ${pkg.title}\n*السعر:* ${pkg.price} جنيه\n\n*الاسم:* ${name}\n*العنوان:* ${address}`;
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+            window.closeModal('booking-modal');
+        }
+
+        window.handleLogin = function() {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+            
+            // Credentials updated as requested
+            if (user === 'ELMAHALAWI' && pass === 'ELMAHALAWI010') {
+                window.closeModal('login-modal');
+                document.getElementById('admin-user').value = '';
+                document.getElementById('admin-pass').value = '';
+                window.buildAdminForm();
+                window.openModal('admin-modal');
+            } else {
+                window.showMessage('بيانات الدخول غير صحيحة.', true);
+            }
+        }
+
+        window.buildAdminForm = function() {
+            const container = document.getElementById('admin-form-container');
+            let html = `
+                <div class="bg-dark-800 p-4 sm:p-5 rounded-2xl border border-dark-700">
+                    <h4 class="text-gold-500 font-bold mb-4 text-sm sm:text-base"><i class="fa-solid fa-image ml-2"></i> الصورة الرئيسية للموقع</h4>
+                    <input type="text" id="admin-hero-bg" value="${appData.heroBg}" class="w-full bg-black border border-dark-600 rounded-lg px-3 py-3 text-white text-xs sm:text-sm" dir="ltr">
+                </div>
+            `;
+
+            const generatePkgFields = (pkg) => `
+                <div class="bg-dark-800 p-4 rounded-xl border border-dark-700 relative mt-4">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="w-full md:w-1/3">
+                            <img src="${pkg.img}" class="w-full h-24 object-cover rounded-lg border border-dark-700 mb-2">
+                            <label class="block text-xs text-gray-400 mb-1">رابط الصورة</label>
+                            <input type="text" id="admin-img-${pkg.id}" value="${pkg.img}" class="w-full bg-black border border-dark-700 rounded-lg px-2 py-2 text-xs text-white" dir="ltr">
+                        </div>
+                        <div class="w-full md:w-2/3 space-y-3">
+                            <div class="flex gap-2">
+                                <div class="flex-grow">
+                                    <label class="block text-xs text-gray-400 mb-1">اسم الباقة</label>
+                                    <input type="text" id="admin-title-${pkg.id}" value="${pkg.title}" class="w-full bg-black border border-dark-700 rounded-lg px-2 py-2 text-sm text-white">
+                                </div>
+                                <div class="w-24">
+                                    <label class="block text-xs text-gray-400 mb-1">السعر</label>
+                                    <input type="number" id="admin-price-${pkg.id}" value="${pkg.price}" class="w-full bg-black border border-dark-700 rounded-lg px-2 py-2 text-sm text-white text-center">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">الوصف</label>
+                                <textarea id="admin-desc-${pkg.id}" class="w-full bg-black border border-dark-700 rounded-lg px-2 py-2 text-sm text-white h-16 resize-none">${pkg.desc}</textarea>
+                            </div>
+                            <div class="flex items-center gap-2 pt-1">
+                                <input type="checkbox" id="admin-active-${pkg.id}" ${pkg.active ? 'checked' : ''} class="w-5 h-5 accent-gold-500 rounded bg-black border-dark-700">
+                                <label for="admin-active-${pkg.id}" class="text-sm font-bold ${pkg.active ? 'text-green-400' : 'text-red-400'}">الخدمة متاحة للعملاء</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            html += `<h4 class="text-lg sm:text-xl font-bold text-white mt-8 mb-2"><i class="fa-solid fa-video text-gold-500 ml-2"></i> باقات الفيديو</h4>`;
+            appData.videoPackages.forEach(pkg => { html += generatePkgFields(pkg); });
+
+            html += `<h4 class="text-lg sm:text-xl font-bold text-white mt-8 mb-2"><i class="fa-solid fa-camera text-gold-500 ml-2"></i> باقات التصوير</h4>`;
+            appData.photoPackages.forEach(pkg => { html += generatePkgFields(pkg); });
+
+            container.innerHTML = html;
+        }
+
+        window.saveAdminData = async function() {
+            appData.heroBg = document.getElementById('admin-hero-bg').value;
+
+            const updatePkg = (pkg) => {
+                pkg.title = document.getElementById(`admin-title-${pkg.id}`).value;
+                pkg.price = Number(document.getElementById(`admin-price-${pkg.id}`).value);
+                pkg.desc = document.getElementById(`admin-desc-${pkg.id}`).value;
+                pkg.img = document.getElementById(`admin-img-${pkg.id}`).value;
+                pkg.active = document.getElementById(`admin-active-${pkg.id}`).checked;
+            };
+
+            appData.videoPackages.forEach(updatePkg);
+            appData.photoPackages.forEach(updatePkg);
+
+            try {
+                await setDoc(docRef, appData);
+                window.closeModal('admin-modal');
+                window.showMessage('تم حفظ التعديلات وتحديث الموقع بنجاح!');
+            } catch (error) {
+                console.error("Error saving:", error);
+                window.showMessage('حدث خطأ أثناء حفظ البيانات.', true);
+            }
+        }
+
+        window.addEventListener('load', async () => {
+            window.renderApp();
+
+            // Intro Screen Sequence
+            const introScreen = document.getElementById('intro-screen');
+            setTimeout(() => {
+                introScreen.style.opacity = '0';
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    // Trigger scroll animations
+                    document.querySelectorAll('.slide-up').forEach(el => el.classList.add('visible'));
+                }, 1000); 
+            }, 3000); // 3 seconds intro
+
+            // Firebase Auth & Sync
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Auth init failed", err);
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) return;
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (!docSnap.exists()) await setDoc(docRef, appData);
+
+                    onSnapshot(docRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            appData = snapshot.data();
+                            window.renderApp(); 
+                        }
+                    });
+                } catch (dbError) {
+                    console.error("Database connection error", dbError);
+                }
+            });
+        });
+
+        // UI Event Listeners
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const icon = btn.querySelector('i');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            if(menu.classList.contains('hidden')){
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            });
+        });
+
+        // Glassmorphism Navbar on Scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-nav');
+                navbar.classList.remove('bg-transparent', 'py-2');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-2');
+                navbar.classList.remove('glass-nav');
+            }
+            
+            // Scroll animations for sections
+            document.querySelectorAll('.slide-up:not(.visible)').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
