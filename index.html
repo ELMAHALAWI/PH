@@ -349,12 +349,12 @@
     <!-- Firebase & Logic Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        const userFirebaseConfig = {
+        // إعدادات قاعدة بياناتك الأصلية
+        const firebaseConfig = {
             apiKey: "AIzaSyCsoru_MzV3F1-iOzCDwRnAXvnMzmqJRi0",
             authDomain: "elmahalawi1.firebaseapp.com",
             projectId: "elmahalawi1",
@@ -363,16 +363,11 @@
             appId: "1:264892804574:web:b9732f8e7c39bffd4fc14f"
         };
         
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userFirebaseConfig;
-        
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
-        const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'elmahalawi-studio';
 
-        // Strict path for Canvas rules
-        const docPath = `artifacts/${currentAppId}/public/data/studioSettings`;
-        const docRef = doc(db, docPath, 'mainData');
+        // مسار حفظ البيانات في فايربيز (مبسط وثابت)
+        const docRef = doc(db, "elmahalawi_studio", "main_settings");
 
         let appData = {
             heroBg: "https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80",
@@ -402,11 +397,9 @@
                         <div class="h-48 relative">
                             ${pkg.featured ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">الأكثر طلباً</div>` : ''}
                             <img src="${pkg.img}" class="w-full h-full object-cover">
-                            <!-- التلاشي الساحر (Gradient Fade) -->
                             <div class="absolute inset-0 bg-gradient-to-t from-brandNavy-700 via-brandNavy-700/50 to-transparent z-10"></div>
                         </div>
                         <div class="-mt-8 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
-                            <!-- الأيقونة تطفو فوق منطقة التلاشي -->
                             <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
                                 <i class="fa-solid ${pkg.icon || 'fa-video'} text-brandPink-500 text-xl"></i>
                             </div>
@@ -421,7 +414,7 @@
                 `;
             });
 
-            // Photo - Sorting dynamically by price from lowest to highest
+            // Photo 
             const sortedPhotoPkgs = [...appData.photoPackages].sort((a, b) => a.price - b.price);
             
             const photoGrid = document.getElementById('photo-grid');
@@ -436,11 +429,9 @@
                         <div class="h-56 relative">
                             ${isVip ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">VIP</div>` : ''}
                             <img src="${pkg.img}" class="w-full h-full object-cover">
-                            <!-- التلاشي الساحر (Gradient Fade) -->
                             <div class="absolute inset-0 bg-gradient-to-t ${fadeColor} to-transparent z-10"></div>
                         </div>
                         <div class="-mt-10 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
-                            <!-- الأيقونة تطفو فوق منطقة التلاشي -->
                             <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${isVip ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
                                 <i class="fa-solid ${pkg.icon || 'fa-camera-retro'} text-brandPink-500 text-xl"></i>
                             </div>
@@ -600,7 +591,7 @@
                 window.showMessage('تم الحفظ وتحديث الموقع بنجاح!');
             } catch (error) {
                 console.error("Save error:", error);
-                window.showMessage('حدث خطأ أثناء الحفظ. تأكد من إعدادات قاعدة البيانات (Rules).', true);
+                window.showMessage('لا تملك صلاحيات الحفظ، يرجى تعديل (Rules) في قاعدة البيانات.', true);
             } finally {
                 btn.textContent = 'حفظ ونشر التعديلات';
                 btn.disabled = false;
@@ -616,29 +607,26 @@
                 setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 800);
             }, 3000);
 
-            // Auth First (Rule 3)
+            // الربط المباشر مع فايربيز لضمان ظهور البيانات للجميع
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                    await setDoc(docRef, appData);
                 } else {
-                    await signInAnonymously(auth);
+                    appData = docSnap.data();
+                    window.renderApp();
                 }
-            } catch (e) { console.error("Auth init failed", e); }
-
-            onAuthStateChanged(auth, async (user) => {
-                if (!user) return;
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (!docSnap.exists()) await setDoc(docRef, appData);
-                    
-                    onSnapshot(docRef, (snapshot) => {
-                        if (snapshot.exists()) {
-                            appData = snapshot.data();
-                            window.renderApp();
-                        }
-                    }, (err) => console.error("Snapshot error:", err));
-                } catch (e) { console.error("DB error:", e); }
-            });
+                
+                // الاستماع للتغييرات اللحظية
+                onSnapshot(docRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        appData = snapshot.data();
+                        window.renderApp();
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase Read Error:", error);
+            }
         });
 
         // UI Interactions
