@@ -14,29 +14,29 @@
 
     <!-- أيقونة الموقع (Favicon) -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="ELMAHALAWI" />
-<link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="ELMAHALAWI" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
     <!-- Open Graph للفيسبوك والواتساب (Facebook & WhatsApp Cards) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://elmahalawi.site/">
     <meta property="og:title" content="ELMAHALAWI PHOTOGRAPHY | أسامة المحلاوي للتصوير والمونتاج">
     <meta property="og:description" content="أسامة المحلاوي لخدمات التصوير الفوتوغرافي، تصوير الأفراح والحفلات، والمونتاج الاحترافي. احجز باقتك الآن.">
-    <!-- يفضل تغيير هذا الرابط لاحقاً برابط لوجو الاستوديو الخاص بك -->
     <meta property="og:image" content="https://6a355620495f432db76d9f00.imgix.net/790143577.jpg.jpg">
     <meta property="og:site_name" content="ELMAHALAWI PHOTOGRAPHY">
     <meta property="og:locale" content="ar_AR">
 
-    <!-- Twitter Cards لظهور احترافي على تويتر/X -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://elmahalawi.site/">
     <meta name="twitter:title" content="ELMAHALAWI PHOTOGRAPHY | أسامة المحلاوي للتصوير والمونتاج">
     <meta name="twitter:description" content="استديو أسامة لبيب المحلاوي لخدمات التصوير الفوتوغرافي والمونتاج الاحترافي.">
     <meta name="twitter:image" content="https://6a355620495f432db76d9f00.imgix.net/790143577.jpg.jpg">
 
-    <!-- Schema.org (JSON-LD) لتعزيز فهم جوجل لطبيعة عملك واسمك -->
+    <!-- Schema.org -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -288,10 +288,10 @@
                 <div class="h-1 w-16 bg-brandPink-500 mx-auto rounded"></div>
             </div>
             
-            <!-- Horizontal Scroll on Mobile, Grid on Desktop -->
             <div id="video-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 px-4 md:px-0">
                 <!-- Injected via JS -->
             </div>
+            <div id="video-empty-msg" class="text-center text-gray-500 hidden py-8">لا توجد باقات فيديو متاحة حالياً.</div>
         </div>
     </section>
 
@@ -303,10 +303,10 @@
                 <div class="h-1 w-16 bg-brandPink-500 mx-auto rounded"></div>
             </div>
             
-            <!-- Horizontal Scroll on Mobile, Grid on Desktop -->
             <div id="photo-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 items-center px-4 md:px-0">
                 <!-- Injected via JS -->
             </div>
+            <div id="photo-empty-msg" class="text-center text-gray-500 hidden py-8">لا توجد باقات تصوير متاحة حالياً.</div>
         </div>
     </section>
 
@@ -437,85 +437,89 @@
         // مسار حفظ البيانات في فايربيز (مبسط وثابت)
         const docRef = doc(db, "elmahalawi_studio", "main_settings");
 
+        // تم تفريغ البيانات الافتراضية حتى لا تعود مجدداً
         let appData = {
             heroBg: "https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80",
-            videoPackages: [
-                { id: 'v1', title: 'تصوير ومونتاج بسيط', desc: 'لقطات سريعة ومونتاج أساسي وألوان طبيعية.', price: 400, active: true, img: 'https://images.unsplash.com/photo-1527011045974-4b8cb6a21356?auto=format&fit=crop&w=500&q=80', icon: 'fa-video' },
-                { id: 'v2', title: 'تصوير ومونتاج احترافي', desc: 'تصوير سينمائي ومونتاج احترافي وتعديل ألوان متقدم.', price: 600, active: true, img: 'https://images.unsplash.com/photo-1589652717521-10c0d092dea9?auto=format&fit=crop&w=500&q=80', featured: true, icon: 'fa-film' },
-                { id: 'v3', title: 'تصوير فقط', desc: 'جلسة تصوير فيديو بدون مونتاج وتسليم المواد الخام.', price: 300, active: true, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80', icon: 'fa-camera' },
-                { id: 'v4', title: 'مونتاج بسيط فقط', desc: 'ترتيب المقاطع، وإضافة موسيقى أساسية.', price: 200, active: true, img: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=500&q=80', icon: 'fa-scissors' },
-                { id: 'v5', title: 'مونتاج احترافي فقط', desc: 'تعديل الألوان، المؤثرات البصرية، والانتقالات.', price: 400, active: true, img: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&w=500&q=80', icon: 'fa-wand-magic-sparkles' }
-            ],
-            photoPackages: [
-                { id: 'p1', title: 'Silver', desc: 'جلسة تصوير، تعديل احترافي، تسليم فلاشة.', price: 1200, active: true, img: 'https://images.unsplash.com/photo-1532712938736-69f071cb29c4?auto=format&fit=crop&w=500&q=80', icon: 'fa-images' },
-                { id: 'p2', title: 'VIP WEDDING', desc: 'تغطية الزفاف، فيديو ومونتاج، ألبوم فاخر، تابلوه.', price: 2700, active: true, img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80', featured: true, icon: 'fa-crown' },
-                { id: 'p3', title: 'MINI WEDDING', desc: 'كتب الكتاب/خطوبة، تصوير فيديو هايلايت وتصوير فوتوغرافي.', price: 2000, active: true, img: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=500&q=80', icon: 'fa-heart' }
-            ]
+            videoPackages: [],
+            photoPackages: []
         };
 
         window.renderApp = function() {
-            document.getElementById('home').style.backgroundImage = `url('${appData.heroBg}')`;
+            document.getElementById('home').style.backgroundImage = `url('${appData.heroBg || ''}')`;
 
             // Video 
             const videoGrid = document.getElementById('video-grid');
+            const videoEmptyMsg = document.getElementById('video-empty-msg');
             videoGrid.innerHTML = '';
-            appData.videoPackages.forEach((pkg) => {
-                videoGrid.innerHTML += `
-                    <div class="snap-center snap-always shrink-0 w-[85vw] sm:w-[60vw] md:w-full bg-brandNavy-700 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-600'} rounded-2xl flex flex-col overflow-hidden premium-card fade-in-section is-visible ${!pkg.active ? 'disabled' : ''}">
-                        <div class="h-48 relative">
-                            ${pkg.featured ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">الأكثر طلباً</div>` : ''}
-                            <img src="${pkg.img}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-brandNavy-700 via-brandNavy-700/50 to-transparent z-10"></div>
-                        </div>
-                        <div class="-mt-8 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
-                            <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
-                                <i class="fa-solid ${pkg.icon || 'fa-video'} text-brandPink-500 text-xl"></i>
+            
+            if(!appData.videoPackages || appData.videoPackages.length === 0) {
+                videoEmptyMsg.classList.remove('hidden');
+            } else {
+                videoEmptyMsg.classList.add('hidden');
+                appData.videoPackages.forEach((pkg) => {
+                    videoGrid.innerHTML += `
+                        <div class="snap-center snap-always shrink-0 w-[85vw] sm:w-[60vw] md:w-full bg-brandNavy-700 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-600'} rounded-2xl flex flex-col overflow-hidden premium-card fade-in-section is-visible ${!pkg.active ? 'disabled' : ''}">
+                            <div class="h-48 relative">
+                                ${pkg.featured ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">الأكثر طلباً</div>` : ''}
+                                <img src="${pkg.img || 'https://placehold.co/600x400/161d36/F0A3C1?text=Video'}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-brandNavy-700 via-brandNavy-700/50 to-transparent z-10"></div>
                             </div>
-                            <h3 class="text-lg font-bold text-white mb-2">${pkg.title}</h3>
-                            <p class="text-gray-400 text-xs mb-4 flex-grow leading-relaxed">${pkg.desc}</p>
-                            <div class="text-2xl font-black text-brandPink-500 mb-4">${pkg.price} <span class="text-xs text-gray-500 font-normal">جنيه</span></div>
-                            <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-2.5 rounded-lg ${pkg.featured ? 'bg-brandPink-500 text-brandNavy-900 hover:bg-brandPink-600 font-bold' : 'bg-brandNavy-800 border border-brandNavy-500 text-gray-300 hover:border-brandPink-500 hover:text-brandPink-500'} text-xs font-bold transition">
-                                ${pkg.active ? 'اطلب الآن' : 'غير متاح'}
-                            </button>
+                            <div class="-mt-8 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
+                                <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid ${pkg.icon || 'fa-video'} text-brandPink-500 text-xl"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-2">${pkg.title}</h3>
+                                <p class="text-gray-400 text-xs mb-4 flex-grow leading-relaxed">${pkg.desc}</p>
+                                <div class="text-2xl font-black text-brandPink-500 mb-4">${pkg.price} <span class="text-xs text-gray-500 font-normal">جنيه</span></div>
+                                <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-2.5 rounded-lg ${pkg.featured ? 'bg-brandPink-500 text-brandNavy-900 hover:bg-brandPink-600 font-bold' : 'bg-brandNavy-800 border border-brandNavy-500 text-gray-300 hover:border-brandPink-500 hover:text-brandPink-500'} text-xs font-bold transition">
+                                    ${pkg.active ? 'اطلب الآن' : 'غير متاح'}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
             // Photo 
-            const sortedPhotoPkgs = [...appData.photoPackages].sort((a, b) => a.price - b.price);
-            
             const photoGrid = document.getElementById('photo-grid');
+            const photoEmptyMsg = document.getElementById('photo-empty-msg');
             photoGrid.innerHTML = '';
-            sortedPhotoPkgs.forEach((pkg) => {
-                const isVip = pkg.featured;
-                const bgColor = isVip ? 'bg-brandNavy-900' : 'bg-brandNavy-700';
-                const fadeColor = isVip ? 'from-brandNavy-900 via-brandNavy-900/50' : 'from-brandNavy-700 via-brandNavy-700/50';
-                
-                photoGrid.innerHTML += `
-                    <div class="snap-center snap-always shrink-0 w-[85vw] sm:w-[60vw] md:w-full ${bgColor} border ${isVip ? 'border-brandPink-500 md:-translate-y-4 shadow-[0_10px_30px_rgba(240,163,193,0.15)]' : 'border-brandNavy-600'} rounded-2xl flex flex-col overflow-hidden premium-card fade-in-section is-visible ${!pkg.active ? 'disabled' : ''}">
-                        <div class="h-56 relative">
-                            ${isVip ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">VIP</div>` : ''}
-                            <img src="${pkg.img}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t ${fadeColor} to-transparent z-10"></div>
-                        </div>
-                        <div class="-mt-10 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
-                            <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${isVip ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
-                                <i class="fa-solid ${pkg.icon || 'fa-camera-retro'} text-brandPink-500 text-xl"></i>
+
+            if(!appData.photoPackages || appData.photoPackages.length === 0) {
+                photoEmptyMsg.classList.remove('hidden');
+            } else {
+                photoEmptyMsg.classList.add('hidden');
+                const sortedPhotoPkgs = [...appData.photoPackages].sort((a, b) => a.price - b.price);
+                sortedPhotoPkgs.forEach((pkg) => {
+                    const isVip = pkg.featured;
+                    const bgColor = isVip ? 'bg-brandNavy-900' : 'bg-brandNavy-700';
+                    const fadeColor = isVip ? 'from-brandNavy-900 via-brandNavy-900/50' : 'from-brandNavy-700 via-brandNavy-700/50';
+                    
+                    photoGrid.innerHTML += `
+                        <div class="snap-center snap-always shrink-0 w-[85vw] sm:w-[60vw] md:w-full ${bgColor} border ${isVip ? 'border-brandPink-500 md:-translate-y-4 shadow-[0_10px_30px_rgba(240,163,193,0.15)]' : 'border-brandNavy-600'} rounded-2xl flex flex-col overflow-hidden premium-card fade-in-section is-visible ${!pkg.active ? 'disabled' : ''}">
+                            <div class="h-56 relative">
+                                ${isVip ? `<div class="absolute top-3 right-3 z-30 bg-brandPink-500 text-brandNavy-900 text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">VIP</div>` : ''}
+                                <img src="${pkg.img || 'https://placehold.co/600x400/161d36/F0A3C1?text=Photo'}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t ${fadeColor} to-transparent z-10"></div>
                             </div>
-                            <h3 class="text-xl font-en font-bold text-white tracking-wide mb-2">${pkg.title}</h3>
-                            <div class="mb-4">
-                                <span class="text-3xl font-black ${isVip ? 'text-brandPink-500' : 'text-white'}">${pkg.price}</span>
-                                <span class="text-gray-500 text-xs">جنيه</span>
+                            <div class="-mt-10 relative z-20 px-5 pb-6 flex flex-col flex-grow text-center">
+                                <div class="card-icon-container mx-auto mb-4 bg-brandNavy-800 border ${isVip ? 'border-brandPink-500' : 'border-brandNavy-500'} w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid ${pkg.icon || 'fa-camera-retro'} text-brandPink-500 text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-en font-bold text-white tracking-wide mb-2">${pkg.title}</h3>
+                                <div class="mb-4">
+                                    <span class="text-3xl font-black ${isVip ? 'text-brandPink-500' : 'text-white'}">${pkg.price}</span>
+                                    <span class="text-gray-500 text-xs">جنيه</span>
+                                </div>
+                                <p class="text-gray-400 text-xs mb-5 flex-grow leading-relaxed">${pkg.desc}</p>
+                                <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-3 rounded-lg ${isVip ? 'bg-brandPink-500 text-brandNavy-900 hover:bg-brandPink-600 font-bold' : 'bg-brandNavy-800 border border-brandNavy-500 text-white hover:bg-brandNavy-900'} text-xs font-bold transition">
+                                    ${pkg.active ? 'اختيار الباقة' : 'غير متاح'}
+                                </button>
                             </div>
-                            <p class="text-gray-400 text-xs mb-5 flex-grow leading-relaxed">${pkg.desc}</p>
-                            <button onclick="window.openBooking('${pkg.id}')" ${!pkg.active ? 'disabled' : ''} class="w-full py-3 rounded-lg ${isVip ? 'bg-brandPink-500 text-brandNavy-900 hover:bg-brandPink-600 font-bold' : 'bg-brandNavy-800 border border-brandNavy-500 text-white hover:bg-brandNavy-900'} text-xs font-bold transition">
-                                ${pkg.active ? 'اختيار الباقة' : 'غير متاح'}
-                            </button>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             setTimeout(handleScroll, 50);
         }
 
@@ -536,7 +540,10 @@
             window.openModal('msg-modal');
         };
 
-        window.getPackageById = (id) => [...appData.videoPackages, ...appData.photoPackages].find(p => p.id === id);
+        window.getPackageById = (id) => {
+            const allPkgs = [...(appData.videoPackages || []), ...(appData.photoPackages || [])];
+            return allPkgs.find(p => p.id === id);
+        }
 
         window.openBooking = (pkgId) => {
             const pkg = window.getPackageById(pkgId);
@@ -573,25 +580,92 @@
             }
         };
 
+        // دالة لمزامنة مدخلات الأدمن الحالية قبل التحديث
+        window.syncAdminFormToAppData = () => {
+            const heroInput = document.getElementById('admin-hero-bg');
+            if(heroInput) appData.heroBg = heroInput.value;
+
+            (appData.videoPackages || []).forEach(pkg => {
+                const titleEl = document.getElementById(`admin-title-${pkg.id}`);
+                if(titleEl) {
+                    pkg.title = titleEl.value;
+                    pkg.price = Number(document.getElementById(`admin-price-${pkg.id}`).value);
+                    pkg.desc = document.getElementById(`admin-desc-${pkg.id}`).value;
+                    pkg.img = document.getElementById(`admin-img-${pkg.id}`).value;
+                    pkg.active = document.getElementById(`admin-active-${pkg.id}`).checked;
+                    pkg.featured = document.getElementById(`admin-featured-${pkg.id}`).checked;
+                }
+            });
+
+            (appData.photoPackages || []).forEach(pkg => {
+                const titleEl = document.getElementById(`admin-title-${pkg.id}`);
+                if(titleEl) {
+                    pkg.title = titleEl.value;
+                    pkg.price = Number(document.getElementById(`admin-price-${pkg.id}`).value);
+                    pkg.desc = document.getElementById(`admin-desc-${pkg.id}`).value;
+                    pkg.img = document.getElementById(`admin-img-${pkg.id}`).value;
+                    pkg.active = document.getElementById(`admin-active-${pkg.id}`).checked;
+                    pkg.featured = document.getElementById(`admin-featured-${pkg.id}`).checked;
+                }
+            });
+        };
+
+        window.addNewPackage = (type) => {
+            window.syncAdminFormToAppData();
+            const newPkg = {
+                id: 'pkg_' + Date.now(),
+                title: 'باقة جديدة',
+                desc: 'وصف الباقة هنا...',
+                price: 0,
+                active: true,
+                featured: false,
+                img: '',
+                icon: type === 'video' ? 'fa-video' : 'fa-camera'
+            };
+            if(type === 'video') {
+                if(!appData.videoPackages) appData.videoPackages = [];
+                appData.videoPackages.push(newPkg);
+            } else {
+                if(!appData.photoPackages) appData.photoPackages = [];
+                appData.photoPackages.push(newPkg);
+            }
+            window.buildAdminForm();
+        };
+
+        window.deletePackage = (type, id) => {
+            if(!confirm('هل أنت متأكد من حذف هذه الباقة نهائياً؟')) return;
+            window.syncAdminFormToAppData();
+            if(type === 'video') {
+                appData.videoPackages = appData.videoPackages.filter(p => p.id !== id);
+            } else {
+                appData.photoPackages = appData.photoPackages.filter(p => p.id !== id);
+            }
+            window.buildAdminForm();
+        };
+
         window.buildAdminForm = () => {
             const container = document.getElementById('admin-form-container');
             let html = `
                 <div class="bg-brandNavy-700 p-4 rounded-xl border border-brandNavy-600">
                     <label class="block text-xs text-gray-400 mb-2">رابط صورة الرئيسية</label>
-                    <input type="text" id="admin-hero-bg" value="${appData.heroBg}" class="w-full bg-brandNavy-900 border border-brandNavy-600 rounded p-2 text-xs text-white focus:outline-none focus:border-brandPink-500" dir="ltr">
+                    <input type="text" id="admin-hero-bg" value="${appData.heroBg || ''}" class="w-full bg-brandNavy-900 border border-brandNavy-600 rounded p-2 text-xs text-white focus:outline-none focus:border-brandPink-500" dir="ltr">
                 </div>
             `;
-            const generateFields = (pkg) => `
-                <div class="bg-brandNavy-700 p-4 rounded-xl border border-brandNavy-600 mt-3">
-                    <h4 class="text-sm font-bold text-brandPink-500 mb-3">${pkg.title}</h4>
+            
+            const generateFields = (pkg, type) => `
+                <div class="bg-brandNavy-700 p-4 rounded-xl border border-brandNavy-600 mt-3 relative">
+                    <button onclick="window.deletePackage('${type}', '${pkg.id}')" class="absolute top-3 left-4 text-red-400 hover:text-red-500 bg-brandNavy-900 w-8 h-8 rounded-full flex items-center justify-center border border-red-500/30 transition shadow-sm" title="حذف الباقة">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                    <h4 class="text-sm font-bold text-brandPink-500 mb-3 ml-12 border-b border-brandNavy-600 pb-2">${pkg.title || 'باقة جديدة'}</h4>
                     <div class="space-y-3">
                         <div class="flex gap-2">
                             <div class="flex-grow">
                                 <label class="block text-[10px] text-gray-400 mb-1">الاسم</label>
                                 <input type="text" id="admin-title-${pkg.id}" value="${pkg.title}" class="w-full bg-brandNavy-900 border border-brandNavy-600 rounded p-1.5 text-xs text-white focus:outline-none focus:border-brandPink-500">
                             </div>
-                            <div class="w-20">
-                                <label class="block text-[10px] text-gray-400 mb-1">السعر</label>
+                            <div class="w-24">
+                                <label class="block text-[10px] text-gray-400 mb-1">السعر (ج)</label>
                                 <input type="number" id="admin-price-${pkg.id}" value="${pkg.price}" class="w-full bg-brandNavy-900 border border-brandNavy-600 rounded p-1.5 text-xs text-white text-center focus:outline-none focus:border-brandPink-500">
                             </div>
                         </div>
@@ -603,17 +677,34 @@
                             <label class="block text-[10px] text-gray-400 mb-1">الوصف</label>
                             <textarea id="admin-desc-${pkg.id}" class="w-full bg-brandNavy-900 border border-brandNavy-600 rounded p-1.5 text-xs text-white h-12 resize-none focus:outline-none focus:border-brandPink-500">${pkg.desc}</textarea>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="admin-active-${pkg.id}" ${pkg.active ? 'checked' : ''} class="w-3 h-3 accent-brandPink-500">
-                            <label for="admin-active-${pkg.id}" class="text-xs font-bold ${pkg.active ? 'text-green-400' : 'text-red-400'}">الخدمة متاحة</label>
+                        <div class="flex items-center gap-6 mt-2 pt-2 border-t border-brandNavy-800">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="admin-active-${pkg.id}" ${pkg.active ? 'checked' : ''} class="w-3 h-3 accent-brandPink-500">
+                                <label for="admin-active-${pkg.id}" class="text-xs font-bold ${pkg.active ? 'text-green-400' : 'text-red-400'}">متاحة للحجز</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="admin-featured-${pkg.id}" ${pkg.featured ? 'checked' : ''} class="w-3 h-3 accent-yellow-500">
+                                <label for="admin-featured-${pkg.id}" class="text-xs font-bold ${pkg.featured ? 'text-yellow-400' : 'text-gray-400'}">تمييز كـ (VIP / الأكثر طلباً)</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-            html += `<h4 class="text-sm font-bold text-white mt-6 border-b border-brandNavy-600 pb-1">باقات الفيديو</h4>`;
-            appData.videoPackages.forEach(p => html += generateFields(p));
-            html += `<h4 class="text-sm font-bold text-white mt-6 border-b border-brandNavy-600 pb-1">باقات التصوير</h4>`;
-            appData.photoPackages.forEach(p => html += generateFields(p));
+            
+            html += `
+            <div class="flex justify-between items-end mt-6 border-b border-brandNavy-600 pb-2">
+                <h4 class="text-sm font-bold text-white">باقات الفيديو</h4>
+                <button onclick="window.addNewPackage('video')" class="bg-brandNavy-700 hover:bg-brandNavy-600 text-brandPink-500 px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> إضافة باقة</button>
+            </div>`;
+            (appData.videoPackages || []).forEach(p => html += generateFields(p, 'video'));
+            
+            html += `
+            <div class="flex justify-between items-end mt-8 border-b border-brandNavy-600 pb-2">
+                <h4 class="text-sm font-bold text-white">باقات التصوير</h4>
+                <button onclick="window.addNewPackage('photo')" class="bg-brandNavy-700 hover:bg-brandNavy-600 text-brandPink-500 px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1"><i class="fa-solid fa-plus"></i> إضافة باقة</button>
+            </div>`;
+            (appData.photoPackages || []).forEach(p => html += generateFields(p, 'photo'));
+            
             container.innerHTML = html;
         };
 
@@ -623,38 +714,9 @@
             btn.disabled = true;
 
             try {
-                const getOldIcon = (id) => {
-                    const oldPkg = [...appData.videoPackages, ...appData.photoPackages].find(p => p.id === id);
-                    return oldPkg ? oldPkg.icon : '';
-                };
-
-                const newData = {
-                    heroBg: document.getElementById('admin-hero-bg').value,
-                    videoPackages: appData.videoPackages.map(pkg => ({
-                        ...pkg,
-                        title: document.getElementById(`admin-title-${pkg.id}`).value,
-                        price: Number(document.getElementById(`admin-price-${pkg.id}`).value),
-                        desc: document.getElementById(`admin-desc-${pkg.id}`).value,
-                        img: document.getElementById(`admin-img-${pkg.id}`).value,
-                        active: document.getElementById(`admin-active-${pkg.id}`).checked,
-                        icon: getOldIcon(pkg.id) 
-                    })),
-                    photoPackages: appData.photoPackages.map(pkg => ({
-                        ...pkg,
-                        title: document.getElementById(`admin-title-${pkg.id}`).value,
-                        price: Number(document.getElementById(`admin-price-${pkg.id}`).value),
-                        desc: document.getElementById(`admin-desc-${pkg.id}`).value,
-                        img: document.getElementById(`admin-img-${pkg.id}`).value,
-                        active: document.getElementById(`admin-active-${pkg.id}`).checked,
-                        icon: getOldIcon(pkg.id)
-                    }))
-                };
-
-                await setDoc(docRef, newData);
-                
-                appData = newData;
+                window.syncAdminFormToAppData(); // التأكد من أخذ آخر التعديلات من الشاشة
+                await setDoc(docRef, appData);
                 window.renderApp(); 
-                
                 window.closeModal('admin-modal');
                 window.showMessage('تم الحفظ وتحديث الموقع بنجاح!');
             } catch (error) {
@@ -667,6 +729,7 @@
         };
 
         window.addEventListener('load', async () => {
+            // تفريغ البيانات القديمة عند بداية التشغيل لمنع رجوعها
             window.renderApp();
 
             setTimeout(() => {
@@ -675,13 +738,13 @@
                 setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 800);
             }, 3000);
 
-            // الربط المباشر مع فايربيز لضمان ظهور البيانات للجميع
+            // قراءة البيانات من الفايربيز
             try {
                 const docSnap = await getDoc(docRef);
-                if (!docSnap.exists()) {
-                    await setDoc(docRef, appData);
-                } else {
+                if (docSnap.exists()) {
                     appData = docSnap.data();
+                    if(!appData.videoPackages) appData.videoPackages = [];
+                    if(!appData.photoPackages) appData.photoPackages = [];
                     window.renderApp();
                 }
                 
@@ -689,6 +752,8 @@
                 onSnapshot(docRef, (snapshot) => {
                     if (snapshot.exists()) {
                         appData = snapshot.data();
+                        if(!appData.videoPackages) appData.videoPackages = [];
+                        if(!appData.photoPackages) appData.photoPackages = [];
                         window.renderApp();
                     }
                 });
