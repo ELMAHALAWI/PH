@@ -127,7 +127,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease-in-out;
         }
         .intro-text {
             font-family: 'Montserrat', sans-serif;
@@ -137,7 +137,7 @@
             color: transparent;
             -webkit-text-stroke: 1.5px #F0A3C1;
             position: relative;
-            animation: textReveal 1.2s ease-out forwards;
+            animation: textReveal 2s ease-out forwards;
         }
         .intro-text::before {
             content: "ELMAHALAWI";
@@ -148,7 +148,7 @@
             height: 100%;
             color: #F0A3C1;
             overflow: hidden;
-            animation: textFill 1s ease-in-out 0.4s forwards;
+            animation: textFill 1.5s ease-in-out 0.8s forwards;
             -webkit-text-stroke: 0px;
         }
         @keyframes textReveal {
@@ -794,8 +794,8 @@
             setTimeout(() => {
                 const intro = document.getElementById('intro-screen');
                 intro.style.opacity = '0';
-                setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 500);
-            }, 1800);
+                setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 400);
+            }, 2300);
 
             // قراءة البيانات من الفايربيز
             try {
