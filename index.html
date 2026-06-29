@@ -127,7 +127,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
         }
         .intro-text {
             font-family: 'Montserrat', sans-serif;
@@ -137,7 +137,7 @@
             color: transparent;
             -webkit-text-stroke: 1.5px #F0A3C1;
             position: relative;
-            animation: textReveal 2s ease-out forwards;
+            animation: textReveal 1.2s ease-out forwards;
         }
         .intro-text::before {
             content: "ELMAHALAWI";
@@ -148,7 +148,7 @@
             height: 100%;
             color: #F0A3C1;
             overflow: hidden;
-            animation: textFill 1.5s ease-in-out 0.8s forwards;
+            animation: textFill 1s ease-in-out 0.4s forwards;
             -webkit-text-stroke: 0px;
         }
         @keyframes textReveal {
@@ -227,6 +227,15 @@
             opacity: 1;
             transform: none;
         }
+
+        /* حركة سهم السحب الخاصة بالموبايل */
+        @keyframes swipeHint {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-6px); }
+        }
+        .animate-swipe {
+            animation: swipeHint 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -295,10 +304,22 @@
                 <div class="h-1 w-16 bg-brandPink-500 mx-auto rounded"></div>
             </div>
             
-            <div id="video-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 px-4 md:px-0">
+            <div id="video-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-4 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 px-4 md:px-0 relative">
                 <!-- Injected via JS -->
             </div>
             <div id="video-empty-msg" class="text-center text-gray-500 hidden py-8">لا توجد باقات فيديو متاحة حالياً.</div>
+            
+            <!-- مؤشر السحب للانستجرام (يظهر في الموبايل فقط ويتم تفعيله من الجافاسكريبت) -->
+            <div id="video-swipe-indicator" class="hidden md:hidden flex justify-center items-center gap-2 mt-4 text-gray-400 fade-in-section">
+                <span class="text-xs font-semibold">اسحب للمزيد</span>
+                <div class="flex gap-1 items-center mx-2">
+                    <span class="w-2 h-2 rounded-full bg-brandPink-500 shadow-[0_0_5px_rgba(240,163,193,0.5)]"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                    <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                </div>
+                <i class="fa-solid fa-arrow-left text-brandPink-500 animate-swipe text-sm"></i>
+            </div>
         </div>
     </section>
 
@@ -310,10 +331,22 @@
                 <div class="h-1 w-16 bg-brandPink-500 mx-auto rounded"></div>
             </div>
             
-            <div id="photo-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 items-center px-4 md:px-0">
+            <div id="photo-grid" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-4 md:grid md:grid-cols-3 md:overflow-visible md:gap-6 md:pb-0 items-center px-4 md:px-0">
                 <!-- Injected via JS -->
             </div>
             <div id="photo-empty-msg" class="text-center text-gray-500 hidden py-8">لا توجد باقات تصوير متاحة حالياً.</div>
+
+            <!-- مؤشر السحب للانستجرام (يظهر في الموبايل فقط ويتم تفعيله من الجافاسكريبت) -->
+            <div id="photo-swipe-indicator" class="hidden md:hidden flex justify-center items-center gap-2 mt-4 text-gray-400 fade-in-section">
+                <span class="text-xs font-semibold">اسحب للمزيد</span>
+                <div class="flex gap-1 items-center mx-2">
+                    <span class="w-2 h-2 rounded-full bg-brandPink-500 shadow-[0_0_5px_rgba(240,163,193,0.5)]"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                    <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                </div>
+                <i class="fa-solid fa-arrow-left text-brandPink-500 animate-swipe text-sm"></i>
+            </div>
         </div>
     </section>
 
@@ -444,7 +477,6 @@
         // مسار حفظ البيانات في فايربيز (مبسط وثابت)
         const docRef = doc(db, "elmahalawi_studio", "main_settings");
 
-        // تم تفريغ البيانات الافتراضية حتى لا تعود مجدداً
         let appData = {
             heroBg: "https://6a355620495f432db76d9f00.imgix.net/790143577.jpg.jpg",
             videoPackages: [],
@@ -457,12 +489,22 @@
             // Video 
             const videoGrid = document.getElementById('video-grid');
             const videoEmptyMsg = document.getElementById('video-empty-msg');
+            const videoSwipeIndicator = document.getElementById('video-swipe-indicator');
             videoGrid.innerHTML = '';
             
             if(!appData.videoPackages || appData.videoPackages.length === 0) {
                 videoEmptyMsg.classList.remove('hidden');
+                videoSwipeIndicator.classList.add('hidden');
             } else {
                 videoEmptyMsg.classList.add('hidden');
+                
+                // اظهار مؤشر السحب فقط إذا كان هناك أكثر من باقة واحدة
+                if(appData.videoPackages.length > 1) {
+                    videoSwipeIndicator.classList.remove('hidden');
+                } else {
+                    videoSwipeIndicator.classList.add('hidden');
+                }
+
                 appData.videoPackages.forEach((pkg) => {
                     videoGrid.innerHTML += `
                         <div class="snap-center snap-always shrink-0 w-[85vw] sm:w-[60vw] md:w-full bg-brandNavy-700 border ${pkg.featured ? 'border-brandPink-500' : 'border-brandNavy-600'} rounded-2xl flex flex-col overflow-hidden premium-card fade-in-section is-visible ${!pkg.active ? 'disabled' : ''}">
@@ -490,12 +532,22 @@
             // Photo 
             const photoGrid = document.getElementById('photo-grid');
             const photoEmptyMsg = document.getElementById('photo-empty-msg');
+            const photoSwipeIndicator = document.getElementById('photo-swipe-indicator');
             photoGrid.innerHTML = '';
 
             if(!appData.photoPackages || appData.photoPackages.length === 0) {
                 photoEmptyMsg.classList.remove('hidden');
+                photoSwipeIndicator.classList.add('hidden');
             } else {
                 photoEmptyMsg.classList.add('hidden');
+                
+                // اظهار مؤشر السحب فقط إذا كان هناك أكثر من باقة واحدة
+                if(appData.photoPackages.length > 1) {
+                    photoSwipeIndicator.classList.remove('hidden');
+                } else {
+                    photoSwipeIndicator.classList.add('hidden');
+                }
+
                 const sortedPhotoPkgs = [...appData.photoPackages].sort((a, b) => a.price - b.price);
                 sortedPhotoPkgs.forEach((pkg) => {
                     const isVip = pkg.featured;
@@ -742,8 +794,8 @@
             setTimeout(() => {
                 const intro = document.getElementById('intro-screen');
                 intro.style.opacity = '0';
-                setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 800);
-            }, 3000);
+                setTimeout(() => { intro.style.display = 'none'; handleScroll(); }, 500);
+            }, 1800);
 
             // قراءة البيانات من الفايربيز
             try {
